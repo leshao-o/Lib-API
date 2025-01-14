@@ -8,5 +8,12 @@ class AuthorAdd(BaseModel):
     biography: str
     birth_date: date
 
+
+class AuthorPatch(BaseModel):
+    name: str | None = None
+    biography: str | None = None
+    birth_date: date | None = None
+
+
 class Author(AuthorAdd):
     id: int
