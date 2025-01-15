@@ -11,5 +11,6 @@ class BookAdd(BaseModel):
     genre: str
     available_copies: int
 
+
 class Book(BookAdd):
     id: int

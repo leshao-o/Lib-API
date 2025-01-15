@@ -1,7 +1,7 @@
 """init all tables
 
 Revision ID: bc321d3dd5f8
-Revises: 
+Revises:
 Create Date: 2025-01-11 12:41:54.975194
 
 """
@@ -58,9 +58,7 @@ def upgrade() -> None:
         sa.Column("author_id", sa.Integer(), nullable=False),
         sa.Column("genre", sa.String(length=50), nullable=False),
         sa.Column("available_copies", sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ["author_id"], ["authors.id"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["author_id"], ["authors.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
 

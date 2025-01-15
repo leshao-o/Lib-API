@@ -11,6 +11,6 @@ class UsersORM(Base):
     name: Mapped[str] = mapped_column(String(50))
     email: Mapped[str] = mapped_column(String(200), unique=True)
     hashed_password: Mapped[str] = mapped_column(String(200))
-    
+
     is_user: Mapped[bool] = mapped_column(default=True, server_default=text("true"))
     is_admin: Mapped[bool] = mapped_column(default=False, server_default=text("false"))

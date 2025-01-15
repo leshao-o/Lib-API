@@ -18,7 +18,7 @@ class AuthorService(BaseService):
         edited_author = await self.db.author.update(id=id, data=author_data)
         await self.db.commit()
         return edited_author
-    
+
     async def delete_author(self, id: int) -> Author:
         deleted_author = await self.db.author.delete(id=id)
         await self.db.commit()

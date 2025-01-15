@@ -13,6 +13,6 @@ class UserCRUD(BaseCRUD):
     async def get_user_by_email(self, email: EmailStr) -> User:
         query = select(self.model).filter_by(email=email)
         result = await self.session.execute(query)
+        # обработать ошибку когда нет юзера с таким email
         model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
         return model
-    

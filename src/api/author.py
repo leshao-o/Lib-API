@@ -7,6 +7,7 @@ from src.schemas.author import AuthorAdd, AuthorPatch
 
 router = APIRouter(prefix="/authors", tags=["Авторы"])
 
+
 @router.post(
     "",
     summary="Добавляет автора",
@@ -55,7 +56,7 @@ async def add_author(
 async def get_authors(db: DBDep, pagination: PaginationDep):
     authors = await AuthorService(db).get_authors()
 
-    authors = authors[pagination.per_page * (pagination.page - 1):][:pagination.per_page]
+    authors = authors[pagination.per_page * (pagination.page - 1) :][: pagination.per_page]
     return {"status": "OK", "data": authors}
 
 
@@ -89,16 +90,11 @@ async def edit_author(
         openapi_examples={
             "1": {
                 "summary": "author_1",
-                "value": {
-                    "name": "Александр Грибоедов", 
-                    "birth_date": "1795-01-15"
-                },
+                "value": {"name": "Александр Грибоедов", "birth_date": "1795-01-15"},
             },
             "2": {
                 "summary": "author_2",
-                "value": {
-                    "biography": "новая биография"
-                },
+                "value": {"biography": "новая биография"},
             },
         }
     ),

@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import APIRouter, Request, Response
 
 from src.services.user import UserService
 from src.api.dependencies import DBDep, UserIdDep
 from src.schemas.user import UserRequestAdd, UserLogin
+
 
 router = APIRouter(prefix="/auth", tags=["Авторизация и аутентификация"])
 
@@ -20,7 +21,7 @@ async def register_user(db: DBDep, user_data: UserRequestAdd):
 @router.post(
     "/login",
     summary="Авторизация пользователя",
-    description="Авторизация пользователя если пользователь существует"
+    description="Авторизация пользователя если пользователь существует",
 )
 async def login_user(db: DBDep, user_data: UserLogin, response: Response):
     access_token = await UserService(db).login_user(user_data=user_data, response=response)
@@ -40,8 +41,8 @@ async def logout(request: Request, response: Response):
 @router.get(
     "/me",
     summary="Получение пользователя",
-    description="Получение текущего авторизованного пользователя если авторизованн",
+    description="Получение текущего авторизованного пользователя если авторизован",
 )
 async def get_me(db: DBDep, user_id: UserIdDep):
     user = await UserService(db).get_user_by_id(user_id=user_id)
-    return {"status": "OK", "data": user}   
+    return {"status": "OK", "data": user}

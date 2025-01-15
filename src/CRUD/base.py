@@ -22,11 +22,10 @@ class BaseCRUD:
         query = select(self.model)
         result = await self.session.execute(query)
         models = [
-            self.schema.model_validate(one, from_attributes=True)
-            for one in result.scalars().all()
+            self.schema.model_validate(one, from_attributes=True) for one in result.scalars().all()
         ]
         return models
-    
+
     # Метод для получения данных по ID
     async def get_by_id(self, id: int) -> BaseModel:
         query = select(self.model).filter(self.model.id == id)

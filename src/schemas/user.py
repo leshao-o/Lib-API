@@ -13,10 +13,18 @@ class UserRequestAdd(BaseModel):
     password: str
 
 
+class UserResponse(BaseModel):
+    name: str
+    email: str
+    id: int
+    is_user: bool
+    is_admin: bool
+
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
-    
+
 
 class User(UserAdd):
     id: int
