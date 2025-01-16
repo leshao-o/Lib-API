@@ -1,6 +1,8 @@
 from datetime import date
 
 from fastapi import APIRouter, Body
+
+from src.exceptions import BookAlreadyReturnedException, BookAlreadyReturnedHTTPException, BookNotFoundException, BookNotFoundHTTPException, BorrowNotFoundException, BorrowNotFoundHTTPException, MaxBooksLimitExceededException, MaxBooksLimitExceededHTTPException, NoAvailableCopiesException, NoAvailableCopiesHTTPException, check_date
 from src.services.borrow import BorrowService
 from src.api.dependencies import DBDep, PaginationDep, UserDep, AdminUserDep
 from src.schemas.borrow import BorrowAddRequest
@@ -42,7 +44,14 @@ async def add_borrow(
         }
     ),
 ):
-    new_borrow = await BorrowService(db).add_borrow(user=user, borrow_data=borrow_data)
+    try:
+        new_borrow = await BorrowService(db).add_borrow(user=user, borrow_data=borrow_data)
+    except BookNotFoundException:
+        raise BookNotFoundHTTPException
+    except NoAvailableCopiesException:
+        raise NoAvailableCopiesHTTPException
+    except MaxBooksLimitExceededException:
+        raise MaxBooksLimitExceededHTTPException
     return {"status": "OK", "data": new_borrow}
 
 
@@ -84,5 +93,8 @@ async def get_my_borrows(db: DBDep, user: UserDep):
     ),
 )
 async def return_book(db: DBDep, id: int, return_date: date, user: UserDep):
-    returned_borrow = await BorrowService(db).return_book(id=id, return_date=return_date, user=user)
+    try:
+        returned_borrow = await BorrowService(db).return_book(id=id, return_date=return_date, user=user)
+    except BookAlreadyReturnedException:
+        raise BookAlreadyReturnedHTTPException
     return {"status": "OK", "data": returned_borrow}

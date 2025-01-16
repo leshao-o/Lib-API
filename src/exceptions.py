@@ -57,8 +57,12 @@ class NoAvailableCopiesException(LibraryException):
     detail = "Нет доступных экземпляров книги для выдачи"
 
 
+class MaxBooksLimitExceededException(LibraryException):
+    detail = "Превышен лимит на количество книг"
+
+
 class BookAlreadyReturnedException(LibraryException):
-    detail = "Книга уже была возвращена по этому займу"
+    detail = "Книга уже была возвращена"
 
 
 class InvalidInputException(LibraryException):
@@ -127,6 +131,11 @@ class BorrowNotFoundHTTPException(ObjectNotFoundHTTPException):
 class NoAvailableCopiesHTTPException(LibraryHTTPException):
     status_code = 404
     detail = "Нет доступных экземпляров книги для выдачи"
+
+
+class MaxBooksLimitExceededHTTPException(LibraryHTTPException):
+    status_code = 403
+    detail = "Превышен лимит на количество книг"
 
 
 class BookAlreadyReturnedHTTPException(LibraryHTTPException):
