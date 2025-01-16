@@ -40,9 +40,6 @@ def get_current_user_id(token: str = Depends(get_token)) -> int:
     return data.get("user_id")
 
 
-UserIdDep = Annotated[int, Depends(get_current_user_id)]
-
-
 async def get_current_user(db: DBDep, token: str = Depends(get_token)):
     user_id = get_current_user_id(token)
     user = await UserService(db).get_user_by_id(user_id=user_id)
@@ -51,12 +48,6 @@ async def get_current_user(db: DBDep, token: str = Depends(get_token)):
 
 async def get_current_admin_user(current_user: User = Depends(get_current_user)):
     if current_user.is_admin:
-        return current_user
-    raise HTTPException(status_code=403, detail="Недостаточно прав")
-
-
-async def get_current_user(current_user: User = Depends(get_current_user)):
-    if current_user.is_user:
         return current_user
     raise HTTPException(status_code=403, detail="Недостаточно прав")
 

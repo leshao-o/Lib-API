@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Response
 
 from src.services.user import UserService
-from src.api.dependencies import DBDep, UserIdDep
+from src.api.dependencies import DBDep, UserDep
 from src.schemas.user import UserRequestAdd, UserLogin
 
 
@@ -43,6 +43,6 @@ async def logout(request: Request, response: Response):
     summary="Получение пользователя",
     description="Получение текущего авторизованного пользователя если авторизован",
 )
-async def get_me(db: DBDep, user_id: UserIdDep):
-    user = await UserService(db).get_user_by_id(user_id=user_id)
+async def get_me(db: DBDep, user: UserDep):
+    user = await UserService(db).get_user_by_id(user_id=user.id)
     return {"status": "OK", "data": user}
