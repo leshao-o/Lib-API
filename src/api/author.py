@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body
 
 from src.services.author import AuthorService
-from src.api.dependencies import DBDep, PaginationDep
+from src.api.dependencies import DBDep, PaginationDep, AdminUserDep
 from src.schemas.author import AuthorAdd, AuthorPatch
 
 
@@ -53,7 +53,7 @@ async def add_author(
         Возвращает статус операции и данные авторов для указанной страницы."""
     ),
 )
-async def get_authors(db: DBDep, pagination: PaginationDep):
+async def get_authors(db: DBDep, admin_user: AdminUserDep, pagination: PaginationDep):
     authors = await AuthorService(db).get_authors()
 
     authors = authors[pagination.per_page * (pagination.page - 1) :][: pagination.per_page]
@@ -69,7 +69,7 @@ async def get_authors(db: DBDep, pagination: PaginationDep):
         Возвращает статус операции и данные запрашиваемого автора."""
     ),
 )
-async def get_author_by_id(db: DBDep, id: int):
+async def get_author_by_id(db: DBDep, admin_user: AdminUserDep, id: int):
     author = await AuthorService(db).get_author_by_id(id=id)
     return {"status": "OK", "data": author}
 
@@ -86,6 +86,7 @@ async def get_author_by_id(db: DBDep, id: int):
 async def edit_author(
     db: DBDep,
     id: int,
+    admin_user: AdminUserDep,
     author_data: AuthorPatch = Body(
         openapi_examples={
             "1": {
@@ -112,6 +113,6 @@ async def edit_author(
         Возвращает статус операции и данные удаленного автора."""
     ),
 )
-async def delete_author(db: DBDep, id: int):
+async def delete_author(db: DBDep, admin_user: AdminUserDep, id: int):
     deleted_author = await AuthorService(db).delete_author(id=id)
     return {"status": "OK", "data": deleted_author}

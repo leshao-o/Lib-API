@@ -13,9 +13,9 @@ from src.api.user import router as router_user
 
 app = FastAPI()
 
-app.include_router(router_author)
 app.include_router(router_auth)
 app.include_router(router_user)
+app.include_router(router_author)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", reload=True)
