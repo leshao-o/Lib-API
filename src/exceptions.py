@@ -25,6 +25,14 @@ class TokenExpireException(LibraryException):
     detail = "Токен доступа просрочен"
 
 
+class InvalidSessionException(LibraryException):
+    detail = "Сессия недействительна"
+    
+
+class WrongPasswordException(LibraryException):
+    detail = "Неправильный пароль"
+
+
 class ObjectNotFoundException(LibraryException):
     detail = "Объект не найден"
 
@@ -78,6 +86,16 @@ class TokenExpireHTTPException(LibraryHTTPException):
 class TokenDecodeHTTPException(LibraryHTTPException):
     status_code = 401
     detail = "Неверный токен"
+
+
+class InvalidSessionHTTPException(LibraryHTTPException):
+    status_code = 401
+    detail = "Сессия недействительна"
+
+
+class WrongPasswordHTTPException(LibraryHTTPException):
+    status_code = 401
+    detail = "Неправильный пароль"
 
 
 class PermissionDeniedHTTPException(LibraryHTTPException):

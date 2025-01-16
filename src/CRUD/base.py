@@ -15,7 +15,10 @@ class BaseCRUD:
     # Метод для добавления данных в базу
     async def create(self, data: BaseModel) -> BaseModel:
         stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
-        result = await self.session.execute(stmt)
+        try:
+            result = await self.session.execute(stmt)
+        except IntegrityError:
+            raise InvalidInputException
         # Валидация (приведение результата к pydantic модели) и возврат добавленной модели
         model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
         return model
