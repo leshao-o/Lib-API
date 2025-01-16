@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from src.exceptions import InvalidInputException, InvalidInputHTTPException, UserNotFoundException, UserNotFoundHTTPException
 from src.schemas.user import UserPatch
 from src.services.user import UserService
 from src.api.dependencies import DBDep, AdminUserDep, PaginationDep, UserDep
@@ -14,7 +15,10 @@ router = APIRouter(prefix="/user", tags=["Пользователи"])
     description="Получение списка всех пользователей. Только для админов",
 )
 async def get_all_users(admin_user: AdminUserDep, db: DBDep, pagination: PaginationDep):
-    users = await UserService(db).get_all_users()
+    try:
+        users = await UserService(db).get_all_users()
+    except UserNotFoundException:
+        raise UserNotFoundHTTPException
     users = users[pagination.per_page * (pagination.page - 1) :][: pagination.per_page]
     return {"status": "OK", "data": users}
 
@@ -29,5 +33,8 @@ async def get_all_users(admin_user: AdminUserDep, db: DBDep, pagination: Paginat
     ),
 )
 async def edit_reader(user: UserDep, db: DBDep, user_data: UserPatch):
-    edited_user = await UserService(db).edit_user(user_data=user_data, id=user.id)
+    try:
+        edited_user = await UserService(db).edit_user(user_data=user_data, id=user.id)
+    except InvalidInputException:
+        raise InvalidInputHTTPException
     return {"status": "OK", "data": edited_user}
