@@ -31,8 +31,16 @@ class BaseCRUD:
         query = select(self.model).filter(self.model.id == id)
         result = await self.session.execute(query)
         model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
-
         return model
+    
+    # Метод для получения данных по фильтру
+    async def get_filtered(self, **filter_by) -> list[BaseModel]:
+        query = select(self.model).filter_by(**filter_by)
+        result = await self.session.execute(query)
+        models = [
+            self.schema.model_validate(one, from_attributes=True) for one in result.scalars().all()
+        ]
+        return models
 
     # Метод для изменения данных, которые передали
     async def update(self, data: BaseModel, **filter_by) -> BaseModel:

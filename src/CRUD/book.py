@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from sqlalchemy import delete, insert, select
 from sqlalchemy.orm import selectinload
 

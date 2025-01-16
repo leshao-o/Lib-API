@@ -10,7 +10,7 @@ router = APIRouter(prefix="/user", tags=["Пользователи"])
 
 @router.get(
     "/",
-    summary="Получение списка пользователей",
+    summary="Возвращает список пользователей",
     description="Получение списка всех пользователей. Только для админов",
 )
 async def get_all_users(admin_user: AdminUserDep, db: DBDep, pagination: PaginationDep):

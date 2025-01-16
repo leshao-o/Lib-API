@@ -40,7 +40,7 @@ async def logout(request: Request, response: Response):
 
 @router.get(
     "/me",
-    summary="Получение пользователя",
+    summary="Возвращает пользователя",
     description="Получение текущего авторизованного пользователя если авторизован",
 )
 async def get_me(db: DBDep, user: UserDep):

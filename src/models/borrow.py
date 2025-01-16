@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.database import Base
@@ -14,3 +14,4 @@ class BorrowsORM(Base):
     reader_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     borrow_date: Mapped[date]
     return_date: Mapped[date]
+    is_returned: Mapped[bool] = mapped_column(server_default=text("false"))

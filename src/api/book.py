@@ -64,7 +64,7 @@ async def add_book(
 
 @router.get(    
     "",
-    summary="Получает список всех книг",
+    summary="Возвращает список всех книг",
     description=(
         """Этот эндпоинт возвращает список всех книг из базы данных со страничной пагинацией. 
         Ожидает количество книг на странице и номер страницы. 
@@ -141,6 +141,6 @@ async def edit_book(
         Возвращает статус операции и данные удалённой книги."""
     ),
 )
-async def delete_book(db: DBDep, id: int):
+async def delete_book(db: DBDep, admin_user: AdminUserDep, id: int):
     deleted_book = await BookService(db).delete_book(id=id)
     return {"status": "OK", "data": deleted_book}

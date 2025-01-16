@@ -28,7 +28,7 @@ class Pagination(BaseModel):
 PaginationDep = Annotated[Pagination, Depends()]
 
 
-def get_token(request: Request):
+def get_token(request: Request) -> str:
     token = request.cookies.get("access_token", None)
     if not token:
         raise HTTPException(status_code=401, detail="Вы не предоставили токен доступа")
@@ -40,13 +40,13 @@ def get_current_user_id(token: str = Depends(get_token)) -> int:
     return data.get("user_id")
 
 
-async def get_current_user(db: DBDep, token: str = Depends(get_token)):
+async def get_current_user(db: DBDep, token: str = Depends(get_token)) -> User:
     user_id = get_current_user_id(token)
     user = await UserService(db).get_user_by_id(user_id=user_id)
     return user
 
 
-async def get_current_admin_user(current_user: User = Depends(get_current_user)):
+async def get_current_admin_user(current_user: User = Depends(get_current_user)) -> User:
     if current_user.is_admin:
         return current_user
     raise HTTPException(status_code=403, detail="Недостаточно прав")
