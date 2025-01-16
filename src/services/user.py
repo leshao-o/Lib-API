@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Request, Response
 
 from src.services.auth import AuthService
-from src.schemas.user import User, UserAdd, UserLogin, UserRequestAdd, UserResponse
+from src.schemas.user import User, UserAdd, UserLogin, UserPatch, UserRequestAdd, UserResponse
 from src.services.base import BaseService
 
 
@@ -42,9 +42,19 @@ class UserService(BaseService):
         for i in range(len(users)):
             users_response.append(from_user_to_user_response(user=users[i]))
         return users_response
+    
+    async def edit_user(self, user_data: UserPatch, id: int) -> UserResponse:
+        edited_user = await self.db.user.update(id=id, data=user_data)
+        await self.db.commit()
+        return from_user_to_user_response(user=edited_user)
 
 
 def from_user_to_user_response(user: User) -> UserResponse:
     return UserResponse(
-        id=user.id, name=user.name, email=user.email, is_user=user.is_user, is_admin=user.is_admin
+        id=user.id, 
+        name=user.name, 
+        email=user.email, 
+        borrowed_books=user.borrowed_books, 
+        is_user=user.is_user, 
+        is_admin=user.is_admin
     )
