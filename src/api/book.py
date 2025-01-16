@@ -1,6 +1,13 @@
 from fastapi import APIRouter, Body
 
-from src.exceptions import BookNotFoundException, BookNotFoundHTTPException, InvalidInputException, InvalidInputHTTPException, ObjectNotFoundException, ObjectNotFoundHTTPException
+from src.exceptions import (
+    BookNotFoundException,
+    BookNotFoundHTTPException,
+    InvalidInputException,
+    InvalidInputHTTPException,
+    ObjectNotFoundException,
+    ObjectNotFoundHTTPException,
+)
 from src.services.book import BookService
 from src.api.dependencies import DBDep, PaginationDep, AdminUserDep, UserDep
 from src.schemas.book import BookAddRequest, BookPatchRequest
@@ -31,7 +38,7 @@ async def add_book(
                     "author_ids": [1],
                     "available_copies": 5,
                     "date_of_publication": "1833-04-02",
-                    "genre": "Роман в стихах"
+                    "genre": "Роман в стихах",
                 },
             },
             "2": {
@@ -42,7 +49,7 @@ async def add_book(
                     "author_ids": [1],
                     "available_copies": 4,
                     "date_of_publication": "1833-11-01",
-                    "genre": "Исторический роман"
+                    "genre": "Исторический роман",
                 },
             },
             "3": {
@@ -53,7 +60,7 @@ async def add_book(
                     "author_ids": [2],
                     "available_copies": 8,
                     "date_of_publication": "1833-04-02",
-                    "genre": "Роман-эпопея"
+                    "genre": "Роман-эпопея",
                 },
             },
         }
@@ -66,7 +73,7 @@ async def add_book(
     return {"status": "OK", "data": new_book}
 
 
-@router.get(    
+@router.get(
     "",
     summary="Возвращает список всех книг",
     description=(
@@ -121,7 +128,7 @@ async def edit_book(
                     "author_ids": [2, 3],
                     "available_copies": 10,
                     "date_of_publication": "1888-04-02",
-                    "genre": "Роман"
+                    "genre": "Роман",
                 },
             },
             "2": {

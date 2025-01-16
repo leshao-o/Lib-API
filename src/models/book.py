@@ -21,8 +21,7 @@ class BooksORM(Base):
     available_copies: Mapped[int]
 
     authors: Mapped[list["AuthorsORM"]] = relationship(
-        back_populates="books",
-        secondary="books_authors"
+        back_populates="books", secondary="books_authors"
     )
 
 

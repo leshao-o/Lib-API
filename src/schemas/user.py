@@ -10,7 +10,7 @@ class UserAdd(BaseModel):
 class UserPatch(BaseModel):
     name: str | None = None
     email: EmailStr | None = None
-    
+
 
 class UserRequestAdd(BaseModel):
     name: str

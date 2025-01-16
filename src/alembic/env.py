@@ -10,7 +10,7 @@ from src.config import settings
 from src.models.author import AuthorsORM  # noqa
 from src.models.user import UsersORM  # noqa
 from src.models.book import BooksORM  # noqa
-from src.models.borrow import BorrowsORM # noqa
+from src.models.borrow import BorrowsORM  # noqa
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -18,7 +18,7 @@ class BookPatchRequest(BaseModel):
     title: str | None = None
     description: str | None = None
     date_of_publication: date | None = None
-    author_ids: list[int] | None = None 
+    author_ids: list[int] | None = None
     genre: str | None = None
     available_copies: int | None = None
 

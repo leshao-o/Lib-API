@@ -13,11 +13,7 @@ class BookCRUD(BaseCRUD):
     schema = Book
 
     async def get_book_with_rels(self, **filter_by) -> list[Book]:
-        query = (
-            select(self.model)
-            .options(selectinload(self.model.authors))
-            .filter_by(**filter_by)
-        )
+        query = select(self.model).options(selectinload(self.model.authors)).filter_by(**filter_by)
         result = await self.session.execute(query)
         models = [
             BookWithRels.model_validate(one, from_attributes=True) for one in result.scalars().all()
@@ -46,7 +42,7 @@ class BooksAuthorsCRUD(BaseCRUD):
         ids_to_delete = list(set(current_authors_ids) - set(new_authors_ids))
         ids_to_insert = list(set(new_authors_ids) - set(current_authors_ids))
 
-        try: 
+        try:
             if ids_to_delete:
                 delete_stmt = delete(self.model).filter(
                     self.model.book_id == book_id, self.model.author_id.in_(ids_to_delete)

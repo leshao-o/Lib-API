@@ -5,9 +5,7 @@ from fastapi import HTTPException
 
 def check_date(borrow_date: date, return_date: date) -> None:
     if return_date <= borrow_date:
-        raise HTTPException(
-            status_code=422, detail="Дата возврата не может быть раньше даты заема"
-        )
+        raise HTTPException(status_code=422, detail="Дата возврата не может быть раньше даты заема")
 
 
 class LibraryException(Exception):
@@ -27,7 +25,7 @@ class TokenExpireException(LibraryException):
 
 class InvalidSessionException(LibraryException):
     detail = "Сессия недействительна"
-    
+
 
 class WrongPasswordException(LibraryException):
     detail = "Неправильный пароль"
@@ -103,8 +101,8 @@ class WrongPasswordHTTPException(LibraryHTTPException):
 
 
 class PermissionDeniedHTTPException(LibraryHTTPException):
-    status_code=403
-    detail="Недостаточно прав"
+    status_code = 403
+    detail = "Недостаточно прав"
 
 
 class ObjectNotFoundHTTPException(LibraryHTTPException):
@@ -115,7 +113,7 @@ class ObjectNotFoundHTTPException(LibraryHTTPException):
 class UserNotFoundHTTPException(ObjectNotFoundHTTPException):
     detail = "Пользователь не найден"
 
-    
+
 class AuthorNotFoundHTTPException(ObjectNotFoundHTTPException):
     detail = "Автор не найден"
 

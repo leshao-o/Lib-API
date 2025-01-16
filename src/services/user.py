@@ -20,7 +20,7 @@ class UserService(BaseService):
             return users_response
         except ObjectNotFoundException:
             raise UserNotFoundException
-    
+
     async def edit_user(self, user_data: UserPatch, id: int) -> UserResponse:
         try:
             edited_user = await self.db.user.update(id=id, data=user_data)

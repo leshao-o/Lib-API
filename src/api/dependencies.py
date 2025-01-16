@@ -3,7 +3,16 @@ from typing import Annotated, AsyncGenerator
 from fastapi import Depends, Query, Request
 from pydantic import BaseModel
 
-from src.exceptions import PermissionDeniedHTTPException, TokenDecodeException, TokenDecodeHTTPException, TokenExpireException, TokenExpireHTTPException, TokenHTTPException, UserNotFoundException, UserNotFoundHTTPException
+from src.exceptions import (
+    PermissionDeniedHTTPException,
+    TokenDecodeException,
+    TokenDecodeHTTPException,
+    TokenExpireException,
+    TokenExpireHTTPException,
+    TokenHTTPException,
+    UserNotFoundException,
+    UserNotFoundHTTPException,
+)
 from src.services.user import UserService
 from src.schemas.user import User
 from src.services.auth import AuthService

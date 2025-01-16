@@ -19,7 +19,5 @@ class AuthorsORM(Base):
     birth_date: Mapped[date]
 
     books: Mapped[list["BooksORM"]] = relationship(
-        back_populates="authors",
-        secondary="books_authors"
+        back_populates="authors", secondary="books_authors"
     )
-    

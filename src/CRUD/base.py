@@ -29,7 +29,8 @@ class BaseCRUD:
             query = select(self.model)
             result = await self.session.execute(query)
             models = [
-                self.schema.model_validate(one, from_attributes=True) for one in result.scalars().all()
+                self.schema.model_validate(one, from_attributes=True)
+                for one in result.scalars().all()
             ]
             return models
         except NoResultFound:
@@ -44,7 +45,7 @@ class BaseCRUD:
             return model
         except NoResultFound:
             raise ObjectNotFoundException
-    
+
     # Метод для получения данных по фильтру
     async def get_filtered(self, **filter_by) -> list[BaseModel]:
         query = select(self.model).filter_by(**filter_by)
@@ -66,12 +67,12 @@ class BaseCRUD:
             result = await self.session.execute(stmt)
         except (IntegrityError, ProgrammingError):
             raise InvalidInputException
-        
+
         try:
             model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
         except NoResultFound:
             raise ObjectNotFoundException
-        
+
         return model
 
     # Метод для удаления данных по заданным фильтрам

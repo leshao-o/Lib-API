@@ -1,4 +1,4 @@
-from src.exceptions import AuthorNotFoundException, InvalidInputException, ObjectNotFoundException
+from src.exceptions import AuthorNotFoundException, ObjectNotFoundException
 from src.services.base import BaseService
 from src.schemas.author import Author, AuthorAdd, AuthorPatch
 

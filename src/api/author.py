@@ -1,6 +1,11 @@
 from fastapi import APIRouter, Body
 
-from src.exceptions import AuthorNotFoundException, AuthorNotFoundHTTPException, InvalidInputException, InvalidInputHTTPException
+from src.exceptions import (
+    AuthorNotFoundException,
+    AuthorNotFoundHTTPException,
+    InvalidInputException,
+    InvalidInputHTTPException,
+)
 from src.services.author import AuthorService
 from src.api.dependencies import DBDep, PaginationDep, AdminUserDep
 from src.schemas.author import AuthorAdd, AuthorPatch
@@ -124,7 +129,7 @@ async def edit_author(
     ),
 )
 async def delete_author(db: DBDep, admin_user: AdminUserDep, id: int):
-    try: 
+    try:
         deleted_author = await AuthorService(db).delete_author(id=id)
     except AuthorNotFoundException:
         raise AuthorNotFoundHTTPException

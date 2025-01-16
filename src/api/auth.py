@@ -1,6 +1,15 @@
 from fastapi import APIRouter, Request, Response
 
-from src.exceptions import InvalidInputException, InvalidInputHTTPException, InvalidSessionException, UserNotFoundException, UserNotFoundHTTPException, WrongPasswordException, WrongPasswordHTTPException, InvalidSessionHTTPException
+from src.exceptions import (
+    InvalidInputException,
+    InvalidInputHTTPException,
+    InvalidSessionException,
+    UserNotFoundException,
+    UserNotFoundHTTPException,
+    WrongPasswordException,
+    WrongPasswordHTTPException,
+    InvalidSessionHTTPException,
+)
 from src.services.auth import AuthService
 from src.services.user import UserService
 from src.api.dependencies import DBDep, UserDep

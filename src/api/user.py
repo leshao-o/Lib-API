@@ -1,6 +1,11 @@
 from fastapi import APIRouter
 
-from src.exceptions import InvalidInputException, InvalidInputHTTPException, UserNotFoundException, UserNotFoundHTTPException
+from src.exceptions import (
+    InvalidInputException,
+    InvalidInputHTTPException,
+    UserNotFoundException,
+    UserNotFoundHTTPException,
+)
 from src.schemas.user import UserPatch
 from src.services.user import UserService
 from src.api.dependencies import DBDep, AdminUserDep, PaginationDep, UserDep

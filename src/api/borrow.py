@@ -2,7 +2,16 @@ from datetime import date
 
 from fastapi import APIRouter, Body
 
-from src.exceptions import BookAlreadyReturnedException, BookAlreadyReturnedHTTPException, BookNotFoundException, BookNotFoundHTTPException, BorrowNotFoundException, BorrowNotFoundHTTPException, MaxBooksLimitExceededException, MaxBooksLimitExceededHTTPException, NoAvailableCopiesException, NoAvailableCopiesHTTPException, check_date
+from src.exceptions import (
+    BookAlreadyReturnedException,
+    BookAlreadyReturnedHTTPException,
+    BookNotFoundException,
+    BookNotFoundHTTPException,
+    MaxBooksLimitExceededException,
+    MaxBooksLimitExceededHTTPException,
+    NoAvailableCopiesException,
+    NoAvailableCopiesHTTPException,
+)
 from src.services.borrow import BorrowService
 from src.api.dependencies import DBDep, PaginationDep, UserDep, AdminUserDep
 from src.schemas.borrow import BorrowAddRequest
@@ -27,19 +36,11 @@ async def add_borrow(
         openapi_examples={
             "1": {
                 "summary": "borrow_1",
-                "value": {
-                    "book_id": 1,
-                    "borrow_date": "2024-12-10",
-                    "return_date": "2025-01-01"
-                },
+                "value": {"book_id": 1, "borrow_date": "2024-12-10", "return_date": "2025-01-01"},
             },
             "2": {
                 "summary": "borrow_2",
-                "value": {
-                    "book_id": 2,
-                    "borrow_date": "2024-12-13",
-                    "return_date": "2025-01-02"
-                },
+                "value": {"book_id": 2, "borrow_date": "2024-12-13", "return_date": "2025-01-02"},
             },
         }
     ),
@@ -94,7 +95,9 @@ async def get_my_borrows(db: DBDep, user: UserDep):
 )
 async def return_book(db: DBDep, id: int, return_date: date, user: UserDep):
     try:
-        returned_borrow = await BorrowService(db).return_book(id=id, return_date=return_date, user=user)
+        returned_borrow = await BorrowService(db).return_book(
+            id=id, return_date=return_date, user=user
+        )
     except BookAlreadyReturnedException:
         raise BookAlreadyReturnedHTTPException
     return {"status": "OK", "data": returned_borrow}

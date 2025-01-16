@@ -1,11 +1,18 @@
 from datetime import datetime, timezone, timedelta
 
-from fastapi import HTTPException, Request, Response
+from fastapi import Request, Response
 from passlib.context import CryptContext
 import jwt
 
 from src.schemas.user import User, UserAdd, UserLogin, UserRequestAdd
-from src.exceptions import InvalidInputException, InvalidSessionException, TokenDecodeException, TokenExpireException, UserNotFoundException, WrongPasswordException
+from src.exceptions import (
+    InvalidInputException,
+    InvalidSessionException,
+    TokenDecodeException,
+    TokenExpireException,
+    UserNotFoundException,
+    WrongPasswordException,
+)
 from src.services.base import BaseService
 from src.config import settings
 
@@ -35,7 +42,7 @@ class AuthService(BaseService):
             raise TokenDecodeException
         except jwt.exceptions.ExpiredSignatureError:
             raise TokenExpireException
-        
+
     async def register_user(self, user_data: UserRequestAdd) -> User:
         hashed_password = self.hash_password(user_data.password)
         new_user_data = UserAdd(
@@ -53,7 +60,7 @@ class AuthService(BaseService):
             user = await self.db.user.get_user_by_email(user_data.email)
         except UserNotFoundException:
             raise UserNotFoundException
-        
+
         if not self.verify_password(user_data.password, user.hashed_password):
             raise WrongPasswordException
         access_token = self.create_access_token({"user_id": user.id})
