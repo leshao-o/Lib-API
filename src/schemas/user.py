@@ -14,9 +14,10 @@ class UserRequestAdd(BaseModel):
 
 
 class UserResponse(BaseModel):
+    id: int
     name: str
     email: str
-    id: int
+    borrowed_books: int
     is_user: bool
     is_admin: bool
 
@@ -28,5 +29,6 @@ class UserLogin(BaseModel):
 
 class User(UserAdd):
     id: int
+    borrowed_books: int
     is_user: bool
     is_admin: bool
