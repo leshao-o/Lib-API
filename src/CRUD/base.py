@@ -66,12 +66,20 @@ class BaseCRUD:
             result = await self.session.execute(stmt)
         except (IntegrityError, ProgrammingError):
             raise InvalidInputException
-        model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
+        
+        try:
+            model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
+        except NoResultFound:
+            raise ObjectNotFoundException
+        
         return model
 
     # Метод для удаления данных по заданным фильтрам
     async def delete(self, **filter_by) -> BaseModel:
         stmt = delete(self.model).filter_by(**filter_by).returning(self.model)
         result = await self.session.execute(stmt)
-        model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
+        try:
+            model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
+        except NoResultFound:
+            raise ObjectNotFoundException
         return model

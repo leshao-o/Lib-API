@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Body
 
+from src.exceptions import AuthorNotFoundException, AuthorNotFoundHTTPException, InvalidInputException, InvalidInputHTTPException
 from src.services.author import AuthorService
 from src.api.dependencies import DBDep, PaginationDep, AdminUserDep
 from src.schemas.author import AuthorAdd, AuthorPatch
@@ -71,7 +72,10 @@ async def get_authors(db: DBDep, admin_user: AdminUserDep, pagination: Paginatio
     ),
 )
 async def get_author_by_id(db: DBDep, admin_user: AdminUserDep, id: int):
-    author = await AuthorService(db).get_author_by_id(id=id)
+    try:
+        author = await AuthorService(db).get_author_by_id(id=id)
+    except AuthorNotFoundException:
+        raise AuthorNotFoundHTTPException
     return {"status": "OK", "data": author}
 
 
@@ -101,7 +105,12 @@ async def edit_author(
         }
     ),
 ):
-    edited_author = await AuthorService(db).edit_author(id=id, author_data=author_data)
+    try:
+        edited_author = await AuthorService(db).edit_author(id=id, author_data=author_data)
+    except InvalidInputException:
+        raise InvalidInputHTTPException
+    except AuthorNotFoundException:
+        raise AuthorNotFoundHTTPException
     return {"status": "OK", "data": edited_author}
 
 
@@ -115,5 +124,8 @@ async def edit_author(
     ),
 )
 async def delete_author(db: DBDep, admin_user: AdminUserDep, id: int):
-    deleted_author = await AuthorService(db).delete_author(id=id)
+    try: 
+        deleted_author = await AuthorService(db).delete_author(id=id)
+    except AuthorNotFoundException:
+        raise AuthorNotFoundHTTPException
     return {"status": "OK", "data": deleted_author}
