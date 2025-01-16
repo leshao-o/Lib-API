@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Body
 
+from src.exceptions import BookNotFoundException, BookNotFoundHTTPException, InvalidInputException, InvalidInputHTTPException, ObjectNotFoundException, ObjectNotFoundHTTPException
 from src.services.book import BookService
 from src.api.dependencies import DBDep, PaginationDep, AdminUserDep, UserDep
 from src.schemas.book import BookAddRequest, BookPatchRequest
@@ -12,7 +13,7 @@ router = APIRouter(prefix="/books", tags=["Книги"])
     "",
     summary="Добавляет новую книгу",
     description=(
-        """Этот эндпоинт добавяет новую книгу в базу данных. 
+        """Этот эндпоинт добавляет новую книгу в базу данных. 
         Ожидает данные о книге, название, описание, id автора/авторов, количество доступных копий, дата публикации и жанр. 
         Возвращает статус операции и данные добавленной книги."""
     ),
@@ -58,7 +59,10 @@ async def add_book(
         }
     ),
 ):
-    new_book = await BookService(db).create_book(book_data=book_data)
+    try:
+        new_book = await BookService(db).create_book(book_data=book_data)
+    except InvalidInputException:
+        raise InvalidInputHTTPException
     return {"status": "OK", "data": new_book}
 
 
@@ -87,7 +91,10 @@ async def get_books(db: DBDep, user: UserDep, pagination: PaginationDep):
     ),
 )
 async def get_book_by_id(user: UserDep, db: DBDep, id: int):
-    book = await BookService(db).get_book_by_id(id=id)
+    try:
+        book = await BookService(db).get_book_by_id(id=id)
+    except ObjectNotFoundException:
+        raise ObjectNotFoundHTTPException
     return {"status": "OK", "data": book}
 
 
@@ -128,7 +135,12 @@ async def edit_book(
         }
     ),
 ):
-    edited_book = await BookService(db).edit_book(id=id, book_data=book_data)
+    try:
+        edited_book = await BookService(db).edit_book(id=id, book_data=book_data)
+    except BookNotFoundException:
+        raise BookNotFoundHTTPException
+    except InvalidInputException:
+        raise InvalidInputHTTPException
     return {"status": "OK", "data": edited_book}
 
 
@@ -142,5 +154,8 @@ async def edit_book(
     ),
 )
 async def delete_book(db: DBDep, admin_user: AdminUserDep, id: int):
-    deleted_book = await BookService(db).delete_book(id=id)
+    try:
+        deleted_book = await BookService(db).delete_book(id=id)
+    except BookNotFoundException:
+        raise BookNotFoundHTTPException
     return {"status": "OK", "data": deleted_book}
