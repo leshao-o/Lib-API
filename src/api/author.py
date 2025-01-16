@@ -19,6 +19,7 @@ router = APIRouter(prefix="/authors", tags=["Авторы"])
 )
 async def add_author(
     db: DBDep,
+    admin_user: AdminUserDep,
     author_data: AuthorAdd = Body(
         openapi_examples={
             "1": {

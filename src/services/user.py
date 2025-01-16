@@ -34,27 +34,16 @@ class UserService(BaseService):
 
     async def get_user_by_id(self, user_id: int) -> UserResponse:
         user = await self.db.user.get_by_id(user_id)
-        return from_user_to_user_response(user=user)
+        return UserResponse(**user.model_dump())
 
     async def get_all_users(self) -> list[UserResponse]:
         users = await self.db.user.get_all()
         users_response = []
         for i in range(len(users)):
-            users_response.append(from_user_to_user_response(user=users[i]))
+            users_response.append(UserResponse(**users[i].model_dump()))
         return users_response
     
     async def edit_user(self, user_data: UserPatch, id: int) -> UserResponse:
         edited_user = await self.db.user.update(id=id, data=user_data)
         await self.db.commit()
-        return from_user_to_user_response(user=edited_user)
-
-
-def from_user_to_user_response(user: User) -> UserResponse:
-    return UserResponse(
-        id=user.id, 
-        name=user.name, 
-        email=user.email, 
-        borrowed_books=user.borrowed_books, 
-        is_user=user.is_user, 
-        is_admin=user.is_admin
-    )
+        return UserResponse(**edited_user.model_dump())

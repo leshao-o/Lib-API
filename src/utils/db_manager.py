@@ -1,5 +1,5 @@
 from src.CRUD.author import AuthorCRUD
-from src.CRUD.book import BookCRUD
+from src.CRUD.book import BookCRUD, BooksAuthorsCRUD
 from src.CRUD.user import UserCRUD
 
 
@@ -20,6 +20,7 @@ class DBManager:
         self.author = AuthorCRUD(self.session)
         self.book = BookCRUD(self.session)
         self.user = UserCRUD(self.session)
+        self.books_authors = BooksAuthorsCRUD(self.session)
 
         return self
 
