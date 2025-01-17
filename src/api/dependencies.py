@@ -18,6 +18,7 @@ from src.schemas.user import User
 from src.services.auth import AuthService
 from src.database import async_session_maker
 from src.utils.db_manager import DBManager
+from src.logger import logger
 
 
 # Функция для получения сессии базы данных
@@ -39,8 +40,10 @@ PaginationDep = Annotated[Pagination, Depends()]
 
 
 def get_token(request: Request) -> str:
+    logger.info("Получение токена")
     token = request.cookies.get("access_token", None)
     if not token:
+        logger.error("Токен не найден")
         raise TokenHTTPException
     return token
 
@@ -49,8 +52,10 @@ def get_current_user_id(token: str = Depends(get_token)) -> int:
     try:
         data = AuthService().decode_token(token)
     except TokenDecodeException:
+        logger.error("Ошибка декодирования токена")
         raise TokenDecodeHTTPException
     except TokenExpireException:
+        logger.error("Токен просрочен")
         raise TokenExpireHTTPException
     return data.get("user_id")
 
@@ -67,6 +72,7 @@ async def get_current_user(db: DBDep, token: str = Depends(get_token)) -> User:
 def get_current_admin_user(current_user: User = Depends(get_current_user)) -> User:
     if current_user.is_admin:
         return current_user
+    logger.error("Пользователь не является администратором")
     raise PermissionDeniedHTTPException
 
 

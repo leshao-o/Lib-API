@@ -6,6 +6,7 @@ from src.exceptions import InvalidInputException, ObjectNotFoundException
 from src.schemas.book import Book, BookWithRels, BooksAuthors, BooksAuthorsAdd
 from src.models.book import BooksAuthorsORM, BooksORM
 from src.CRUD.base import BaseCRUD
+from src.logger import logger
 
 
 class BookCRUD(BaseCRUD):
@@ -13,13 +14,16 @@ class BookCRUD(BaseCRUD):
     schema = Book
 
     async def get_book_with_rels(self, **filter_by) -> list[Book]:
+        logger.info("Получение книг")
         query = select(self.model).options(selectinload(self.model.authors)).filter_by(**filter_by)
         result = await self.session.execute(query)
         models = [
             BookWithRels.model_validate(one, from_attributes=True) for one in result.scalars().all()
         ]
         if not models:
+            logger.error("Книги не найдены")
             raise ObjectNotFoundException
+        logger.info("Книги получены успешно")
         return models
 
 
@@ -28,13 +32,17 @@ class BooksAuthorsCRUD(BaseCRUD):
     schema = BooksAuthors
 
     async def add_many(self, data: list[BooksAuthorsAdd]) -> list[BooksAuthors]:
+        logger.info("Добавление авторов книг")
         stmt = insert(self.model).values([item.model_dump() for item in data])
         try:
             await self.session.execute(stmt)
+            logger.info("Авторы книг добавлены успешно")
         except IntegrityError:
+            logger.error("Ошибка добавления авторов книг")
             raise InvalidInputException
 
     async def edit_authors_ids(self, new_authors_ids: list[int] | None, book_id: int) -> None:
+        logger.info("Изменение авторов книги")
         new_authors_ids = new_authors_ids or []
         get_current_authors_ids_query = select(self.model.author_id).filter_by(book_id=book_id)
         result = await self.session.execute(get_current_authors_ids_query)
@@ -54,5 +62,7 @@ class BooksAuthorsCRUD(BaseCRUD):
                     [{"book_id": book_id, "author_id": a_id} for a_id in ids_to_insert]
                 )
                 await self.session.execute(insert_stmt)
+            logger.info("Авторы книги изменены успешно")
         except IntegrityError:
+            logger.error("Ошибка изменения авторов книги")
             raise InvalidInputException

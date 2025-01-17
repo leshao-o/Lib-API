@@ -12,9 +12,9 @@ class UserService(BaseService):
             raise UserNotFoundException
 
     async def get_all_users(self) -> list[UserResponse]:
-        users = await self.db.user.get_all()
-        users_response = []
         try:
+            users = await self.db.user.get_all()
+            users_response = []
             for i in range(len(users)):
                 users_response.append(UserResponse(**users[i].model_dump()))
             return users_response

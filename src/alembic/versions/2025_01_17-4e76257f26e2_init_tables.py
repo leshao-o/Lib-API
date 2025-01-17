@@ -1,8 +1,8 @@
 """init tables
 
-Revision ID: 5a2bea417304
-Revises:
-Create Date: 2025-01-16 11:04:52.896784
+Revision ID: 4e76257f26e2
+Revises: 
+Create Date: 2025-01-17 00:12:07.067508
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "5a2bea417304"
+revision: str = "4e76257f26e2"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -71,7 +71,9 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("book_id", sa.Integer(), nullable=False),
         sa.Column("author_id", sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(["author_id"], ["authors.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["author_id"], ["authors.id"], ondelete="CASCADE"
+        ),
         sa.ForeignKeyConstraint(["book_id"], ["books.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -82,8 +84,16 @@ def upgrade() -> None:
         sa.Column("reader_id", sa.Integer(), nullable=False),
         sa.Column("borrow_date", sa.Date(), nullable=False),
         sa.Column("return_date", sa.Date(), nullable=False),
+        sa.Column(
+            "is_returned",
+            sa.Boolean(),
+            server_default=sa.text("false"),
+            nullable=False,
+        ),
         sa.ForeignKeyConstraint(["book_id"], ["books.id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["reader_id"], ["users.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["reader_id"], ["users.id"], ondelete="CASCADE"
+        ),
         sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###

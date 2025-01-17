@@ -9,6 +9,7 @@ from src.exceptions import (
 from src.services.author import AuthorService
 from src.api.dependencies import DBDep, PaginationDep, AdminUserDep
 from src.schemas.author import AuthorAdd, AuthorPatch
+from src.logger import logger
 
 
 router = APIRouter(prefix="/authors", tags=["Авторы"])
@@ -47,7 +48,9 @@ async def add_author(
         }
     ),
 ):
+    logger.info("Добавление автора")
     new_author = await AuthorService(db).create_author(author_data=author_data)
+    logger.info("Автор добавлен успешно")
     return {"status": "OK", "data": new_author}
 
 
@@ -61,9 +64,10 @@ async def add_author(
     ),
 )
 async def get_authors(db: DBDep, admin_user: AdminUserDep, pagination: PaginationDep):
+    logger.info("Получение списка авторов")
     authors = await AuthorService(db).get_authors()
-
     authors = authors[pagination.per_page * (pagination.page - 1) :][: pagination.per_page]
+    logger.info("Список авторов получен успешно")
     return {"status": "OK", "data": authors}
 
 
@@ -77,9 +81,12 @@ async def get_authors(db: DBDep, admin_user: AdminUserDep, pagination: Paginatio
     ),
 )
 async def get_author_by_id(db: DBDep, admin_user: AdminUserDep, id: int):
+    logger.info("Получение автора по id")
     try:
         author = await AuthorService(db).get_author_by_id(id=id)
+        logger.info("Автор получен успешно")
     except AuthorNotFoundException:
+        logger.error("Автор не найден")
         raise AuthorNotFoundHTTPException
     return {"status": "OK", "data": author}
 
@@ -110,11 +117,15 @@ async def edit_author(
         }
     ),
 ):
+    logger.info(f"Обновление данных автора с id: {id}")
     try:
         edited_author = await AuthorService(db).edit_author(id=id, author_data=author_data)
+        logger.info("Данные автора обновлены успешно")
     except InvalidInputException:
+        logger.error("Ошибка обновления данных автора: неверный ввод")
         raise InvalidInputHTTPException
     except AuthorNotFoundException:
+        logger.error(f"Автор с id {id} не найден")
         raise AuthorNotFoundHTTPException
     return {"status": "OK", "data": edited_author}
 
@@ -129,8 +140,11 @@ async def edit_author(
     ),
 )
 async def delete_author(db: DBDep, admin_user: AdminUserDep, id: int):
+    logger.info(f"Удаление автора с id: {id}")
     try:
         deleted_author = await AuthorService(db).delete_author(id=id)
+        logger.info(f"Автор с id {id} удален успешно")
     except AuthorNotFoundException:
+        logger.error(f"Автор с id {id} не найден")
         raise AuthorNotFoundHTTPException
     return {"status": "OK", "data": deleted_author}

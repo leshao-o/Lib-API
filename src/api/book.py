@@ -11,6 +11,7 @@ from src.exceptions import (
 from src.services.book import BookService
 from src.api.dependencies import DBDep, PaginationDep, AdminUserDep, UserDep
 from src.schemas.book import BookAddRequest, BookPatchRequest
+from src.logger import logger
 
 
 router = APIRouter(prefix="/books", tags=["Книги"])
@@ -66,9 +67,12 @@ async def add_book(
         }
     ),
 ):
+    logger.info("Добавление новой книги")
     try:
         new_book = await BookService(db).create_book(book_data=book_data)
+        logger.info("Книга добавлена успешно")
     except InvalidInputException:
+        logger.error("Ошибка добавления книги: неверный ввод")
         raise InvalidInputHTTPException
     return {"status": "OK", "data": new_book}
 
@@ -83,8 +87,10 @@ async def add_book(
     ),
 )
 async def get_books(db: DBDep, user: UserDep, pagination: PaginationDep):
+    logger.info("Получение списка книг")
     books = await BookService(db).get_books()
     books = books[pagination.per_page * (pagination.page - 1) :][: pagination.per_page]
+    logger.info("Список книг получен успешно")
     return {"status": "OK", "data": books}
 
 
@@ -98,9 +104,12 @@ async def get_books(db: DBDep, user: UserDep, pagination: PaginationDep):
     ),
 )
 async def get_book_by_id(user: UserDep, db: DBDep, id: int):
+    logger.info(f"Получение книги по id: {id}")
     try:
         book = await BookService(db).get_book_by_id(id=id)
+        logger.info("Книга получена успешно")
     except ObjectNotFoundException:
+        logger.error("Книга не найдена")
         raise ObjectNotFoundHTTPException
     return {"status": "OK", "data": book}
 
@@ -142,11 +151,15 @@ async def edit_book(
         }
     ),
 ):
+    logger.info(f"Редактирование книги с id: {id}")
     try:
         edited_book = await BookService(db).edit_book(id=id, book_data=book_data)
+        logger.info(f"Книга с id: {id} успешно отредактирована")
     except BookNotFoundException:
+        logger.error(f"Книга с id: {id} не найдена")
         raise BookNotFoundHTTPException
     except InvalidInputException:
+        logger.error("Ошибка редактирования книги: неверный ввод")
         raise InvalidInputHTTPException
     return {"status": "OK", "data": edited_book}
 
@@ -161,8 +174,11 @@ async def edit_book(
     ),
 )
 async def delete_book(db: DBDep, admin_user: AdminUserDep, id: int):
+    logger.info(f"Удаление книги с id: {id}")
     try:
         deleted_book = await BookService(db).delete_book(id=id)
+        logger.info(f"Книга с id: {id} успешно удалена")
     except BookNotFoundException:
+        logger.error(f"Книга с id: {id} не найдена")
         raise BookNotFoundHTTPException
     return {"status": "OK", "data": deleted_book}

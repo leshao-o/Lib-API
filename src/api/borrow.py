@@ -15,6 +15,7 @@ from src.exceptions import (
 from src.services.borrow import BorrowService
 from src.api.dependencies import DBDep, PaginationDep, UserDep, AdminUserDep
 from src.schemas.borrow import BorrowAddRequest
+from src.logger import logger
 
 
 router = APIRouter(prefix="/borrows", tags=["Выдачи"])
@@ -45,13 +46,18 @@ async def add_borrow(
         }
     ),
 ):
+    logger.info("Добавление нового займа")
     try:
         new_borrow = await BorrowService(db).add_borrow(user=user, borrow_data=borrow_data)
+        logger.info("Займ добавлен успешно")
     except BookNotFoundException:
+        logger.error("Книга не найдена")
         raise BookNotFoundHTTPException
     except NoAvailableCopiesException:
+        logger.error("Нет доступных копий книги")
         raise NoAvailableCopiesHTTPException
     except MaxBooksLimitExceededException:
+        logger.error("Превышен лимит на количество книг")
         raise MaxBooksLimitExceededHTTPException
     return {"status": "OK", "data": new_borrow}
 
@@ -66,8 +72,10 @@ async def add_borrow(
     ),
 )
 async def get_borrows(db: DBDep, admin_user: AdminUserDep, pagin: PaginationDep):
+    logger.info("Получение списка займов")
     borrows = await BorrowService(db).get_borrows()
     borrows = borrows[pagin.per_page * (pagin.page - 1) :][: pagin.per_page]
+    logger.info("Список займов получен успешно")
     return {"status": "OK", "data": borrows}
 
 
@@ -80,7 +88,9 @@ async def get_borrows(db: DBDep, admin_user: AdminUserDep, pagin: PaginationDep)
     ),
 )
 async def get_my_borrows(db: DBDep, user: UserDep):
+    logger.info("Получение займов читателя")
     borrows = await BorrowService(db).get_my_borrows(user_id=user.id)
+    logger.info("Займы читателя получены успешно")
     return {"status": "OK", "data": borrows}
 
 
@@ -94,10 +104,13 @@ async def get_my_borrows(db: DBDep, user: UserDep):
     ),
 )
 async def return_book(db: DBDep, id: int, return_date: date, user: UserDep):
+    logger.info(f"Завершение займа книги с id: {id}")
     try:
         returned_borrow = await BorrowService(db).return_book(
             id=id, return_date=return_date, user=user
         )
+        logger.info("Займ успешно завершён")
     except BookAlreadyReturnedException:
+        logger.error("Займ уже был возвращён")
         raise BookAlreadyReturnedHTTPException
     return {"status": "OK", "data": returned_borrow}
