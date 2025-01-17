@@ -18,6 +18,10 @@ class UserRequestAdd(BaseModel):
     password: str
 
 
+class UserIsAdminRequest(BaseModel):
+    is_admin: bool
+
+
 class UserResponse(BaseModel):
     id: int
     name: str

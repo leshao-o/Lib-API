@@ -6,7 +6,7 @@ from src.exceptions import (
     UserNotFoundException,
     UserNotFoundHTTPException,
 )
-from src.schemas.user import UserPatch
+from src.schemas.user import UserPatch, UserIsAdminRequest
 from src.services.user import UserService
 from src.api.dependencies import DBDep, AdminUserDep, PaginationDep, UserDep
 from src.logger import logger
@@ -34,6 +34,29 @@ async def get_all_users(admin_user: AdminUserDep, db: DBDep, pagination: Paginat
 
 @router.put(
     "/{id}",
+    summary="Переводит пользователя в админа",
+    description= (
+        """Переводит пользователя в админа или убирает админские права. 
+        Требует указания id пользователя и нового статуса администратора. 
+        Только для админов."""
+    )
+)
+async def turn_user_to_admin(admin_user: AdminUserDep, db: DBDep, is_admin: UserIsAdminRequest, id: int):
+    logger.info("Перевод пользователя в админа")
+    try:
+        user = await UserService(db).turn_to_admin(is_admin=is_admin, id=id)
+    except InvalidInputException:
+        logger.error(f"Ошибка обновления данных пользователя с id: {id}: неверный ввод")
+        raise InvalidInputHTTPException
+    except UserNotFoundException:
+        logger.error("Пользователь не найден")
+        raise UserNotFoundHTTPException
+    logger.info("Пользователь переведен в админа успешно")
+    return {"status": "OK", "data": user}
+
+
+@router.put(
+    "/edit/{id}",
     summary="Обновляет данные конкретного читателя",
     description=(
         """Этот эндпоинт редактирует информацию об читателе по его id. 

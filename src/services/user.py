@@ -1,5 +1,6 @@
+from pydantic import BaseModel
 from src.exceptions import InvalidInputException, ObjectNotFoundException, UserNotFoundException
-from src.schemas.user import UserPatch, UserResponse
+from src.schemas.user import UserIsAdminRequest, UserPatch, UserResponse
 from src.services.base import BaseService
 
 
@@ -28,3 +29,11 @@ class UserService(BaseService):
             raise InvalidInputException
         await self.db.commit()
         return UserResponse(**edited_user.model_dump())
+
+    async def turn_to_admin(self, is_admin: UserIsAdminRequest, id: int) -> UserResponse:
+        try:
+            user = await self.db.user.update(id=id, data=is_admin)
+        except ObjectNotFoundException:
+            raise UserNotFoundException
+        await self.db.commit()
+        return user
