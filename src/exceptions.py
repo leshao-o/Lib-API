@@ -2,9 +2,12 @@ from datetime import date
 
 from fastapi import HTTPException
 
+from src.logger import logger
+
 
 def check_date(borrow_date: date, return_date: date) -> None:
     if return_date <= borrow_date:
+        logger.error("Ошибка добавления данных: дата возврата не может быть раньше даты заема")
         raise HTTPException(status_code=422, detail="Дата возврата не может быть раньше даты заема")
 
 

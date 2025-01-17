@@ -51,13 +51,13 @@ async def add_borrow(
         new_borrow = await BorrowService(db).add_borrow(user=user, borrow_data=borrow_data)
         logger.info("Займ добавлен успешно")
     except BookNotFoundException:
-        logger.error("Книга не найдена")
+        logger.error("Ошибка добавления займа: книга не найдена")
         raise BookNotFoundHTTPException
     except NoAvailableCopiesException:
-        logger.error("Нет доступных копий книги")
+        logger.error("Ошибка добавления займа: нет доступных копий книги")
         raise NoAvailableCopiesHTTPException
     except MaxBooksLimitExceededException:
-        logger.error("Превышен лимит на количество книг")
+        logger.error("Ошибка добавления займа: превышен лимит на количество книг")
         raise MaxBooksLimitExceededHTTPException
     return {"status": "OK", "data": new_borrow}
 
