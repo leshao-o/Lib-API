@@ -1,7 +1,7 @@
 """init tables
 
 Revision ID: 4e76257f26e2
-Revises: 
+Revises:
 Create Date: 2025-01-17 00:12:07.067508
 
 """
@@ -71,9 +71,7 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("book_id", sa.Integer(), nullable=False),
         sa.Column("author_id", sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ["author_id"], ["authors.id"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["author_id"], ["authors.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["book_id"], ["books.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -91,9 +89,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.ForeignKeyConstraint(["book_id"], ["books.id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(
-            ["reader_id"], ["users.id"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["reader_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###
