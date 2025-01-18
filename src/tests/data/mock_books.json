@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Евгений Онегин",
+    "description": "Первый русский роман в стихах",
+    "date_of_publication": "1833-04-02",
+    "genre": "Роман в стихах",
+    "available_copies": 5
+  },
+  {
+    "title": "Война и мир",
+    "description": "Очень длинная книга",
+    "date_of_publication": "1865-12-12",
+    "genre": "Роман-эпопея",
+    "available_copies": 8
+  },
+  {
+    "title": "Преступление и наказание",
+    "description": "Психологический роман",
+    "date_of_publication": "1866-01-01",
+    "genre": "Психологический роман",
+    "available_copies": 6
+  }
+]

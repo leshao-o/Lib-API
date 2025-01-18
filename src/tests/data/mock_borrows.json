@@ -1,0 +1,23 @@
+[
+  {
+    "reader_id": 1,
+    "book_id": 2,
+    "borrow_date": "2024-12-10",
+    "return_date": "2025-01-01",
+    "is_returned": false
+  },
+  {
+    "reader_id": 1,
+    "book_id": 2,
+    "borrow_date": "2024-12-13",
+    "return_date": "2025-01-02",
+    "is_returned": false
+  },
+  {
+    "reader_id": 1,
+    "book_id": 3,
+    "borrow_date": "2024-12-15",
+    "return_date": "2025-01-03",
+    "is_returned": false
+  }
+]
