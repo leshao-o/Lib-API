@@ -26,6 +26,17 @@ class BaseCRUD:
         # Валидация (приведение результата к pydantic модели) и возврат добавленной модели
         model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
         return model
+    
+    # Метод для добавления сразу нескольких строк данных в базу
+    async def add_many(self, data: list[BaseModel]) -> list[BaseModel]:
+        logger.info("Добавление нескольких строк данных в базу")
+        stmt = insert(self.model).values([item.model_dump() for item in data])
+        try:
+            await self.session.execute(stmt)
+            logger.info("Данные добавлены успешно")
+        except IntegrityError:
+            logger.error("Ошибка добавления данных")
+            raise InvalidInputException
 
     # Метод для получения всех данных из таблицы
     async def get_all(self) -> list[BaseModel]:

@@ -31,16 +31,6 @@ class BooksAuthorsCRUD(BaseCRUD):
     model = BooksAuthorsORM
     schema = BooksAuthors
 
-    async def add_many(self, data: list[BooksAuthorsAdd]) -> list[BooksAuthors]:
-        logger.info("Добавление авторов книг")
-        stmt = insert(self.model).values([item.model_dump() for item in data])
-        try:
-            await self.session.execute(stmt)
-            logger.info("Авторы книг добавлены успешно")
-        except IntegrityError:
-            logger.error("Ошибка добавления авторов книг")
-            raise InvalidInputException
-
     async def edit_authors_ids(self, new_authors_ids: list[int] | None, book_id: int) -> None:
         logger.info("Изменение авторов книги")
         new_authors_ids = new_authors_ids or []
