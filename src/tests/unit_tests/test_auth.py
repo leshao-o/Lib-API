@@ -5,7 +5,7 @@ import pytest
 
 # Дополнительная фикстура для тестирования auth api, которая будет создавать пользователя 
 # и авторизовывать его, чтобы когда будет тестироваться test_logout мы не
-# потеряли access_token у основного user_ac, который используется в других тестах
+# потеряли access_token у основного admin_ac, который используется в других тестах
 @pytest.fixture(scope="session")
 async def auth_ac(setup_database, ac) -> AsyncGenerator[AsyncClient, None]:
     await ac.post(

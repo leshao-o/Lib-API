@@ -30,17 +30,6 @@ async def ac() -> AsyncGenerator[AsyncClient, None]:
 
 
 @pytest.fixture(scope="session")
-async def user_ac(setup_database, ac: AsyncClient) -> AsyncGenerator[AsyncClient, None]:
-    await ac.post(
-        url="/auth/register",
-        json={"name": "user", "email": "user@test.com", "password": "user"},
-    )
-    await ac.post(url="/auth/login", json={"email": "user@test.com", "password": "123456"})
-    assert ac.cookies["access_token"]
-    yield ac
-
-
-@pytest.fixture(scope="session")
 async def admin_ac(setup_database, ac: AsyncClient) -> AsyncGenerator[AsyncClient, None]:
     hashed_password = AuthService().hash_password("admin")
     async with engine.begin() as conn:
